@@ -19,8 +19,7 @@ Im using JAX-RS, Resteasy and Hibernate since yous didnt want Spring (which is t
 ### Prerequisites
 - [Docker](https://www.docker.com/get-started)
 - [Maven](https://maven.apache.org/download.cgi) (for building the project)
-
-Make sure you have the appropriate JDK installed. This project requires JDK 21.
+- JDK 21
 
 ### Starting application Locally
 - Clone the repository: git clone <repository-url>
@@ -44,6 +43,58 @@ To retrieve the lengthened URL you can use the following command
 ```bash
 curl http://127.0.0.1:8080/api/urls/<SHORTENED_URL>
 ```
+
+## API Docs
+### API Endpoints
+
+#### Shorten a URL
+
+**Endpoint:**
+```http request
+POST /urls
+```
+
+**Request:**
+```http request
+http://localhost:8080/api/urls/
+```
+
+**Request Body:**
+```
+Long URL to be shortened
+```
+
+**Response:**
+```
+Shortened URL
+```
+
+#### Retrieve the Original URL
+   
+**Endpoint:**
+```http request
+GET /urls/{shortenedUrl}
+```
+
+**Request:**
+```http request
+http://localhost:8080/api/urls/{shortenedUrl}
+```
+
+Response:
+```http request
+Original URL corresponding to the shortened URL
+```
+### Error Handling
+#### **400 Bad Request:** 
+Returned when the provided URL for shortening does not match the expected format.
+
+#### **404 Not Found:** 
+Returned when data is not found in the database for the given shortened URL.
+
+#### **500 Internal Server Error:**
+Returned when there is an error communicating with the database during the URL shortening or retrieval process.
+
 
 ## Next Steps
 
@@ -90,6 +141,7 @@ But considering there was an architectural element I thought may as well give hi
    - **Static Initialization**: The static initialization of the SessionFactory guarantees its creation at the start of the application, minimizing overhead during runtime.
    - **Instantiation Restriction**: The private constructor ensures that the class cannot be instantiated, enforcing adherence to the singleton pattern.
    
+
 2. **URL Data Entity** (UrlDataEntity.java)
    The UrlDataEntity class represents URL data in the database, serving as an entity for the Shortener application. It includes attributes for the unique identifier, original URL, and shortened URL.
    - **JPA Compatibility**: This class is designed for use with JPA, ensuring compatibility with various database systems.
@@ -145,9 +197,13 @@ But considering there was an architectural element I thought may as well give hi
 
 ### Benefits of this approach
 In general this is designed to emphasise a couple of key architectural concerns:
+
 **Modularity**: Each component is organized into separate classes, promoting code modularity and maintainability.
+
 **Ease of Extension**: The modular design allows easy extension of functionality without impacting existing code.
-**Database Abstraction**: The use of Hibernate provides a convenient and abstracted way to interact with the database.
+
+**Database Abstraction**: The use of Hibernate provides a convenient and abstracted way to interact with the database. I might not know hibernate at all but JPA is JPA and I definitely prefer that over a mishmash of direct SQL
+
 **Focused Responsibility and Separation of Concerns**: The UrlResource class focuses on handling HTTP requests, while the actual URL shortening logic is encapsulated in the UrlShortenService class to give one example. This separation of concerns simplifies code maintenance and enhances readability.
 
 ### Areas of improvement
